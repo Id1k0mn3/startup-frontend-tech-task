@@ -1,0 +1,28 @@
+{
+	"home": {
+		"title": "Hotel filters",
+		"description": "Apply search filters and review the confirmed request payload.",
+		"openFilters": "Open filters",
+		"selectedFilters": "Confirmed selected filters"
+	},
+	"modal": {
+		"title": "Filters",
+		"subtitle": "Select the options that should be included in the search request.",
+		"close": "Close filters",
+		"closeSymbol": "×",
+		"cancel": "Cancel",
+		"apply": "Apply"
+	},
+	"confirm": {
+		"title": "Apply selected filters?",
+		"message": "Your current draft will replace the previously confirmed filters.",
+		"cancel": "Cancel",
+		"confirm": "Confirm"
+	},
+	"states": {
+		"loading": "Loading filters...",
+		"error": "Filters could not be loaded.",
+		"retry": "Try again",
+		"empty": "No filters are available."
+	}
+}
