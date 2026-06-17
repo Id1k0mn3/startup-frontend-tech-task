@@ -1,6 +1,8 @@
 import { type Ref } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { Button } from '@/shared/ui/Button'
+
 interface FilterModalFooterProps {
 	applyDisabled: boolean
 	applyButtonRef?: Ref<HTMLButtonElement>
@@ -18,22 +20,21 @@ export const FilterModalFooter = ({
 
 	return (
 		<footer className="flex justify-end gap-3 border-t border-gray-200 px-6 py-4">
-			<button
-				className="rounded-lg border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+			<Button
 				onClick={onClose}
-				type="button"
+				size="default"
+				variant="secondary"
 			>
 				{t('modal.cancel')}
-			</button>
-			<button
-				className="rounded-lg bg-blue-700 px-5 py-2 text-sm font-medium text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:bg-gray-300"
+			</Button>
+			<Button
 				disabled={applyDisabled}
 				onClick={onApply}
 				ref={applyButtonRef}
-				type="button"
+				size="default"
 			>
 				{t('modal.apply')}
-			</button>
+			</Button>
 		</footer>
 	)
 }

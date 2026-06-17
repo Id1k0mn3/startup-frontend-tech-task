@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
+import { Button } from '@/shared/ui/Button'
+
 import { FilterModalStateProps } from '../model/types'
 
 export const FilterModalState = (props: FilterModalStateProps) => {
@@ -19,13 +21,13 @@ export const FilterModalState = (props: FilterModalStateProps) => {
 					<p className="text-sm font-medium text-red-900">
 						{t('states.error')}
 					</p>
-					<button
-						className="mt-3 rounded-lg bg-red-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-800"
+					<Button
+						className="mt-3"
 						onClick={props.onRetry}
-						type="button"
+						variant="danger"
 					>
 						{t('states.retry')}
-					</button>
+					</Button>
 				</div>
 			)
 

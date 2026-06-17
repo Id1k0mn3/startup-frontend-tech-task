@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import { FilterModal } from '@/features/filter-modal'
 import { useFilterStore } from '@/shared/store/filterStore'
+import { Button } from '@/shared/ui/Button'
 
 export const App = () => {
 	const { t } = useTranslation('filter')
@@ -39,14 +40,14 @@ export const App = () => {
 							{t('home.description')}
 						</p>
 					</div>
-					<button
-						className="w-full rounded-lg bg-blue-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-800 sm:w-auto"
+					<Button
+						className="w-full sm:w-auto"
 						onClick={() => setIsFilterModalOpen(true)}
 						ref={openFiltersButtonRef}
-						type="button"
+						size="large"
 					>
 						{t('home.openFilters')}
-					</button>
+					</Button>
 				</header>
 
 				<section aria-labelledby="selected-filters-title">

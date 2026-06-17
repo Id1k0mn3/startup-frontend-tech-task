@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useFocusTrap } from '@/shared/hooks/useFocusTrap'
+import { Button } from '@/shared/ui/Button'
 import { Dialog } from '@/shared/ui/Dialog'
 
 interface FilterConfirmDialogProps {
@@ -45,21 +46,14 @@ export const FilterConfirmDialog = ({
 				{t('confirm.message')}
 			</p>
 			<footer className="mt-6 flex justify-end gap-3">
-				<button
-					className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+				<Button
 					onClick={onCancel}
 					ref={cancelButtonRef}
-					type="button"
+					variant="secondary"
 				>
 					{t('confirm.cancel')}
-				</button>
-				<button
-					className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-800"
-					onClick={onConfirm}
-					type="button"
-				>
-					{t('confirm.confirm')}
-				</button>
+				</Button>
+				<Button onClick={onConfirm}>{t('confirm.confirm')}</Button>
 			</footer>
 		</Dialog>
 	)
