@@ -4,6 +4,7 @@ import { SearchRequestFilter } from '@/shared/api/types/SearchRequest/SearchRequ
 import { useFiltersQuery } from '@/shared/api/useFiltersQuery'
 import { useFocusTrap } from '@/shared/hooks/useFocusTrap'
 import { useLockBodyScroll } from '@/shared/hooks/useLockBodyScroll'
+import { Dialog } from '@/shared/ui/Dialog'
 
 import {
 	createDraftFromSelectedFilters,
@@ -118,38 +119,37 @@ export const FilterModal = ({
 	}
 
 	return (
-		<div
-			aria-describedby="filter-modal-description"
-			aria-labelledby="filter-modal-title"
-			aria-modal="true"
-			className="fixed inset-0 z-10 flex items-center justify-center bg-black/40 p-4"
-			ref={modalRef}
+		<Dialog
+			ariaDescribedBy="filter-modal-description"
+			ariaLabelledBy="filter-modal-title"
+			overlayClassName="z-10 bg-black/40"
+			overlayContent={
+				isConfirmOpen && (
+					<FilterConfirmDialog
+						onCancel={() => setIsConfirmOpen(false)}
+						onConfirm={handleConfirm}
+					/>
+				)
+			}
+			panelClassName="flex max-h-[90dvh] w-full max-w-3xl flex-col overflow-hidden"
 			role="dialog"
+			rootRef={modalRef}
 		>
-			<section className="flex max-h-[90dvh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
-				<FilterModalHeader
-					closeButtonRef={closeButtonRef}
-					onClose={onClose}
-				/>
+			<FilterModalHeader
+				closeButtonRef={closeButtonRef}
+				onClose={onClose}
+			/>
 
-				<div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
-					<FilterModalFilters {...filterModalState} />
-				</div>
+			<div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
+				<FilterModalFilters {...filterModalState} />
+			</div>
 
-				<FilterModalFooter
-					applyDisabled={filterModalState.state !== 'ready'}
-					applyButtonRef={applyButtonRef}
-					onApply={() => setIsConfirmOpen(true)}
-					onClose={onClose}
-				/>
-			</section>
-
-			{isConfirmOpen && (
-				<FilterConfirmDialog
-					onCancel={() => setIsConfirmOpen(false)}
-					onConfirm={handleConfirm}
-				/>
-			)}
-		</div>
+			<FilterModalFooter
+				applyDisabled={filterModalState.state !== 'ready'}
+				applyButtonRef={applyButtonRef}
+				onApply={() => setIsConfirmOpen(true)}
+				onClose={onClose}
+			/>
+		</Dialog>
 	)
 }

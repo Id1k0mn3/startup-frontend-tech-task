@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useFocusTrap } from '@/shared/hooks/useFocusTrap'
+import { Dialog } from '@/shared/ui/Dialog'
 
 interface FilterConfirmDialogProps {
 	onCancel: () => void
@@ -23,45 +24,43 @@ export const FilterConfirmDialog = ({
 	}, [])
 
 	return (
-		<div
-			aria-describedby="filter-confirm-description"
-			aria-labelledby="filter-confirm-title"
-			aria-modal="true"
-			className="fixed inset-0 z-20 flex items-center justify-center bg-black/50 p-4"
-			ref={dialogRef}
+		<Dialog
+			ariaDescribedBy="filter-confirm-description"
+			ariaLabelledBy="filter-confirm-title"
+			overlayClassName="z-20 bg-black/50"
+			panelClassName="w-full max-w-md p-6"
 			role="alertdialog"
+			rootRef={dialogRef}
 		>
-			<section className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-				<h3
-					className="text-xl font-semibold text-gray-950"
-					id="filter-confirm-title"
+			<h3
+				className="text-xl font-semibold text-gray-950"
+				id="filter-confirm-title"
+			>
+				{t('confirm.title')}
+			</h3>
+			<p
+				className="mt-2 text-sm text-gray-600"
+				id="filter-confirm-description"
+			>
+				{t('confirm.message')}
+			</p>
+			<footer className="mt-6 flex justify-end gap-3">
+				<button
+					className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+					onClick={onCancel}
+					ref={cancelButtonRef}
+					type="button"
 				>
-					{t('confirm.title')}
-				</h3>
-				<p
-					className="mt-2 text-sm text-gray-600"
-					id="filter-confirm-description"
+					{t('confirm.cancel')}
+				</button>
+				<button
+					className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-800"
+					onClick={onConfirm}
+					type="button"
 				>
-					{t('confirm.message')}
-				</p>
-				<footer className="mt-6 flex justify-end gap-3">
-					<button
-						className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
-						onClick={onCancel}
-						ref={cancelButtonRef}
-						type="button"
-					>
-						{t('confirm.cancel')}
-					</button>
-					<button
-						className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-800"
-						onClick={onConfirm}
-						type="button"
-					>
-						{t('confirm.confirm')}
-					</button>
-				</footer>
-			</section>
-		</div>
+					{t('confirm.confirm')}
+				</button>
+			</footer>
+		</Dialog>
 	)
 }
