@@ -1,10 +1,15 @@
+import { type Ref } from 'react'
 import { useTranslation } from 'react-i18next'
 
 interface FilterModalHeaderProps {
+	closeButtonRef?: Ref<HTMLButtonElement>
 	onClose: () => void
 }
 
-export const FilterModalHeader = ({ onClose }: FilterModalHeaderProps) => {
+export const FilterModalHeader = ({
+	closeButtonRef,
+	onClose
+}: FilterModalHeaderProps) => {
 	const { t } = useTranslation('filter')
 
 	return (
@@ -16,12 +21,18 @@ export const FilterModalHeader = ({ onClose }: FilterModalHeaderProps) => {
 				>
 					{t('modal.title')}
 				</h2>
-				<p className="mt-1 text-sm text-gray-500">{t('modal.subtitle')}</p>
+				<p
+					className="mt-1 text-sm text-gray-500"
+					id="filter-modal-description"
+				>
+					{t('modal.subtitle')}
+				</p>
 			</div>
 			<button
 				aria-label={t('modal.close')}
 				className="rounded-full px-3 py-1 text-2xl leading-none text-gray-500 transition hover:bg-gray-100 hover:text-gray-900"
 				onClick={onClose}
+				ref={closeButtonRef}
 				type="button"
 			>
 				{t('modal.closeSymbol')}

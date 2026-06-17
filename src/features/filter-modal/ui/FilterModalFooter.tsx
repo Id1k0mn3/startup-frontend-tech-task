@@ -1,13 +1,16 @@
+import { type Ref } from 'react'
 import { useTranslation } from 'react-i18next'
 
 interface FilterModalFooterProps {
 	applyDisabled: boolean
+	applyButtonRef?: Ref<HTMLButtonElement>
 	onApply: () => void
 	onClose: () => void
 }
 
 export const FilterModalFooter = ({
 	applyDisabled,
+	applyButtonRef,
 	onApply,
 	onClose
 }: FilterModalFooterProps) => {
@@ -26,6 +29,7 @@ export const FilterModalFooter = ({
 				className="rounded-lg bg-blue-700 px-5 py-2 text-sm font-medium text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:bg-gray-300"
 				disabled={applyDisabled}
 				onClick={onApply}
+				ref={applyButtonRef}
 				type="button"
 			>
 				{t('modal.apply')}

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { FilterModal } from '@/features/filter-modal'
@@ -7,12 +7,29 @@ import { useFilterStore } from '@/shared/store/filterStore'
 export const App = () => {
 	const { t } = useTranslation('filter')
 	const [isFilterModalOpen, setIsFilterModalOpen] = useState(false)
+	const openFiltersButtonRef = useRef<HTMLButtonElement>(null)
+	const shouldRestoreFocusRef = useRef(false)
 	const selectedFilters = useFilterStore(state => state.selectedFilters)
 	const applyFilters = useFilterStore(state => state.applyFilters)
 
+	const closeFilterModal = () => {
+		shouldRestoreFocusRef.current = true
+		setIsFilterModalOpen(false)
+	}
+
+	useEffect(() => {
+		if (!isFilterModalOpen && shouldRestoreFocusRef.current) {
+			shouldRestoreFocusRef.current = false
+			openFiltersButtonRef.current?.focus()
+		}
+	}, [isFilterModalOpen])
+
 	return (
 		<main className="min-h-dvh bg-slate-50 px-4 py-10">
-			<section className="mx-auto flex w-full max-w-4xl flex-col gap-6">
+			<section
+				aria-hidden={isFilterModalOpen ? true : undefined}
+				className="mx-auto flex w-full max-w-4xl flex-col gap-6"
+			>
 				<header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 					<div>
 						<h1 className="text-3xl font-semibold text-gray-950">
@@ -25,6 +42,7 @@ export const App = () => {
 					<button
 						className="w-full rounded-lg bg-blue-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-800 sm:w-auto"
 						onClick={() => setIsFilterModalOpen(true)}
+						ref={openFiltersButtonRef}
 						type="button"
 					>
 						{t('home.openFilters')}
@@ -48,7 +66,7 @@ export const App = () => {
 				<FilterModal
 					initialValue={selectedFilters}
 					onApply={applyFilters}
-					onClose={() => setIsFilterModalOpen(false)}
+					onClose={closeFilterModal}
 				/>
 			)}
 		</main>

@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { SearchRequestFilter } from '@/shared/api/types/SearchRequest/SearchRequestFilter'
 import { useFiltersQuery } from '@/shared/api/useFiltersQuery'
+import { useFocusTrap } from '@/shared/hooks/useFocusTrap'
+import { useLockBodyScroll } from '@/shared/hooks/useLockBodyScroll'
 
 import {
 	createDraftFromSelectedFilters,
@@ -30,6 +32,13 @@ export const FilterModal = ({
 		createDraftFromSelectedFilters(initialValue, data?.filterItems)
 	)
 	const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+	const modalRef = useRef<HTMLDivElement>(null)
+	const closeButtonRef = useRef<HTMLButtonElement>(null)
+	const applyButtonRef = useRef<HTMLButtonElement>(null)
+	const wasConfirmOpenRef = useRef(false)
+
+	useLockBodyScroll(true)
+	useFocusTrap(modalRef, !isConfirmOpen)
 
 	useEffect(() => {
 		const handleEscape = (event: KeyboardEvent) => {
@@ -50,6 +59,23 @@ export const FilterModal = ({
 
 		return () => window.removeEventListener('keydown', handleEscape)
 	}, [isConfirmOpen, onClose])
+
+	useEffect(() => {
+		closeButtonRef.current?.focus()
+	}, [])
+
+	useEffect(() => {
+		if (isConfirmOpen) {
+			wasConfirmOpenRef.current = true
+
+			return
+		}
+
+		if (wasConfirmOpenRef.current) {
+			wasConfirmOpenRef.current = false
+			applyButtonRef.current?.focus()
+		}
+	}, [isConfirmOpen])
 
 	const selectedFilters = useMemo(
 		() => createSearchRequestFilters(filterItems, draftFilters),
@@ -93,13 +119,18 @@ export const FilterModal = ({
 
 	return (
 		<div
+			aria-describedby="filter-modal-description"
 			aria-labelledby="filter-modal-title"
 			aria-modal="true"
 			className="fixed inset-0 z-10 flex items-center justify-center bg-black/40 p-4"
+			ref={modalRef}
 			role="dialog"
 		>
 			<section className="flex max-h-[90dvh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
-				<FilterModalHeader onClose={onClose} />
+				<FilterModalHeader
+					closeButtonRef={closeButtonRef}
+					onClose={onClose}
+				/>
 
 				<div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
 					<FilterModalFilters {...filterModalState} />
@@ -107,6 +138,7 @@ export const FilterModal = ({
 
 				<FilterModalFooter
 					applyDisabled={filterModalState.state !== 'ready'}
+					applyButtonRef={applyButtonRef}
 					onApply={() => setIsConfirmOpen(true)}
 					onClose={onClose}
 				/>

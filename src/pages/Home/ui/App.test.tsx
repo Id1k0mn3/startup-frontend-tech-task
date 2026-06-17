@@ -59,6 +59,21 @@ vi.mock('@/shared/api/useFiltersQuery', () => ({
 
 const renderApp = () => render(<App />)
 
+const openFilterModal = () => {
+	const openFiltersButton = screen.getByRole('button', {
+		name: 'Open filters'
+	})
+
+	fireEvent.click(openFiltersButton)
+
+	return openFiltersButton
+}
+
+const getFilterDialog = () => screen.getByRole('dialog', { name: 'Filters' })
+
+const getConfirmDialog = () =>
+	screen.getByRole('alertdialog', { name: 'Apply selected filters?' })
+
 const getSelectedFiltersPre = () => {
 	const pre = document.querySelector('pre')
 
@@ -86,9 +101,9 @@ describe('App filter modal flow', () => {
 	it('opens the modal and renders loaded filter options', () => {
 		renderApp()
 
-		fireEvent.click(screen.getByRole('button', { name: 'Open filters' }))
+		openFilterModal()
 
-		expect(screen.getByRole('dialog', { name: 'Filters' })).toBeInTheDocument()
+		expect(getFilterDialog()).toBeInTheDocument()
 		expect(
 			screen.getByRole('checkbox', { name: 'Breakfast included' })
 		).toBeInTheDocument()
@@ -110,7 +125,7 @@ describe('App filter modal flow', () => {
 
 		renderApp()
 
-		fireEvent.click(screen.getByRole('button', { name: 'Open filters' }))
+		openFilterModal()
 
 		expect(
 			screen.getByRole('checkbox', { name: 'Breakfast included' })
@@ -122,7 +137,7 @@ describe('App filter modal flow', () => {
 
 	it('keeps draft changes local until confirmation', () => {
 		renderApp()
-		fireEvent.click(screen.getByRole('button', { name: 'Open filters' }))
+		openFilterModal()
 
 		fireEvent.click(
 			screen.getByRole('checkbox', { name: 'Breakfast included' })
@@ -136,16 +151,13 @@ describe('App filter modal flow', () => {
 
 	it('does not update confirmed state when modal is canceled', () => {
 		renderApp()
-		fireEvent.click(screen.getByRole('button', { name: 'Open filters' }))
+		openFilterModal()
 		fireEvent.click(
 			screen.getByRole('checkbox', { name: 'Breakfast included' })
 		)
 
 		fireEvent.click(
-			within(screen.getByRole('dialog', { name: 'Filters' })).getByRole(
-				'button',
-				{ name: 'Cancel' }
-			)
+			within(getFilterDialog()).getByRole('button', { name: 'Cancel' })
 		)
 
 		expect(
@@ -156,39 +168,36 @@ describe('App filter modal flow', () => {
 
 	it('opens confirmation before saving draft filters', () => {
 		renderApp()
-		fireEvent.click(screen.getByRole('button', { name: 'Open filters' }))
+		openFilterModal()
 		fireEvent.click(
 			screen.getByRole('checkbox', { name: 'Breakfast included' })
 		)
 		fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
 
-		expect(
-			screen.getByRole('alertdialog', { name: 'Apply selected filters?' })
-		).toBeInTheDocument()
+		expect(getConfirmDialog()).toBeInTheDocument()
 		expect(getSelectedFiltersPre()).toHaveTextContent('[]')
 	})
 
 	it('does not update confirmed state when confirmation is canceled', () => {
 		renderApp()
-		fireEvent.click(screen.getByRole('button', { name: 'Open filters' }))
+		openFilterModal()
 		fireEvent.click(
 			screen.getByRole('checkbox', { name: 'Breakfast included' })
 		)
 		fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
 
 		fireEvent.click(
-			within(
-				screen.getByRole('alertdialog', { name: 'Apply selected filters?' })
-			).getByRole('button', { name: 'Cancel' })
+			within(getConfirmDialog()).getByRole('button', { name: 'Cancel' })
 		)
 
 		expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument()
+		expect(getFilterDialog()).toBeInTheDocument()
 		expect(getSelectedFiltersPre()).toHaveTextContent('[]')
 	})
 
 	it('saves draft filters to global state when confirmation is accepted', () => {
 		renderApp()
-		fireEvent.click(screen.getByRole('button', { name: 'Open filters' }))
+		openFilterModal()
 		fireEvent.click(
 			screen.getByRole('checkbox', { name: 'Breakfast included' })
 		)
@@ -202,14 +211,66 @@ describe('App filter modal flow', () => {
 		expect(getSelectedFiltersPre()).toHaveTextContent('breakfast')
 	})
 
+	it('moves focus to the close button when the modal opens', async () => {
+		renderApp()
+
+		openFilterModal()
+
+		expect(getFilterDialog()).toHaveAccessibleDescription(
+			'Select the options that should be included in the search request.'
+		)
+
+		await waitFor(() => {
+			expect(
+				screen.getByRole('button', { name: 'Close filters' })
+			).toHaveFocus()
+		})
+	})
+
+	it('moves focus to confirmation Cancel when Apply is clicked', async () => {
+		renderApp()
+		openFilterModal()
+
+		fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
+
+		const confirmDialog = getConfirmDialog()
+		const cancelButton = within(confirmDialog).getByRole('button', {
+			name: 'Cancel'
+		})
+
+		expect(confirmDialog).toHaveAccessibleDescription(
+			'Your current draft will replace the previously confirmed filters.'
+		)
+
+		await waitFor(() => {
+			expect(cancelButton).toHaveFocus()
+		})
+	})
+
+	it('keeps focus inside the modal when confirmation is canceled', async () => {
+		renderApp()
+		openFilterModal()
+		fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
+
+		fireEvent.click(
+			within(getConfirmDialog()).getByRole('button', { name: 'Cancel' })
+		)
+
+		expect(getFilterDialog()).toBeInTheDocument()
+
+		await waitFor(() => {
+			expect(screen.getByRole('button', { name: 'Apply' })).toHaveFocus()
+		})
+	})
+
 	it('pressing Escape closes the confirmation dialog first and then the modal', () => {
 		renderApp()
-		fireEvent.click(screen.getByRole('button', { name: 'Open filters' }))
+		openFilterModal()
 		fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
 
 		fireEvent.keyDown(window, { key: 'Escape' })
 		expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument()
-		expect(screen.getByRole('dialog', { name: 'Filters' })).toBeInTheDocument()
+		expect(getFilterDialog()).toBeInTheDocument()
 
 		fireEvent.keyDown(window, { key: 'Escape' })
 		expect(
@@ -217,9 +278,64 @@ describe('App filter modal flow', () => {
 		).not.toBeInTheDocument()
 	})
 
+	it('pressing Escape closes the modal when confirmation is not open', () => {
+		renderApp()
+		openFilterModal()
+
+		fireEvent.keyDown(window, { key: 'Escape' })
+
+		expect(
+			screen.queryByRole('dialog', { name: 'Filters' })
+		).not.toBeInTheDocument()
+		expect(getSelectedFiltersPre()).toHaveTextContent('[]')
+	})
+
+	it('returns focus to Open filters after the modal closes', async () => {
+		renderApp()
+		const openFiltersButton = openFilterModal()
+
+		fireEvent.keyDown(window, { key: 'Escape' })
+
+		await waitFor(() => {
+			expect(openFiltersButton).toHaveFocus()
+		})
+	})
+
+	it('keeps Tab focus inside the active dialog', () => {
+		renderApp()
+		openFilterModal()
+
+		const closeButton = screen.getByRole('button', { name: 'Close filters' })
+		const applyButton = screen.getByRole('button', { name: 'Apply' })
+
+		applyButton.focus()
+		fireEvent.keyDown(document, { key: 'Tab' })
+
+		expect(closeButton).toHaveFocus()
+
+		fireEvent.click(applyButton)
+
+		const confirmDialog = getConfirmDialog()
+		const confirmCancelButton = within(confirmDialog).getByRole('button', {
+			name: 'Cancel'
+		})
+		const confirmButton = within(confirmDialog).getByRole('button', {
+			name: 'Confirm'
+		})
+
+		confirmButton.focus()
+		fireEvent.keyDown(document, { key: 'Tab' })
+
+		expect(confirmCancelButton).toHaveFocus()
+
+		fireEvent.keyDown(document, { key: 'Tab', shiftKey: true })
+
+		expect(confirmButton).toHaveFocus()
+	})
+
 	it('updates homepage JSON only after confirmation', async () => {
 		renderApp()
-		fireEvent.click(screen.getByRole('button', { name: 'Open filters' }))
+		openFilterModal()
 		fireEvent.click(
 			screen.getByRole('checkbox', { name: 'Breakfast included' })
 		)
