@@ -1,7 +1,8 @@
-import { FilterBase, FilterChooseOption, FilterType } from '.'
+import { FilterBase } from './FilterBase'
+import { FilterChooseOption } from './FilterChooseOption'
+import { FilterType } from './FilterType'
 
 export interface FilterChoose extends FilterBase {
-	type: FilterType.OPTION
-	allowAll?: boolean
+	type: typeof FilterType.OPTION
 	options: FilterChooseOption[]
 }

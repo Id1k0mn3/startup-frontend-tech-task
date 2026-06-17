@@ -4,13 +4,18 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
-		"dev": "vite",
-		"build": "tsc && vite build",
-		"lint:all": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+		"dev": "vite --configLoader runner",
+		"build": "tsc && vite build --configLoader runner",
+		"lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+		"lint:fix": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --fix",
+		"lint:all": "pnpm run lint",
 		"lint:file": "eslint --report-unused-disable-directives --max-warnings 0",
-		"format:all": "prettier --log-level warn --write .",
+		"format": "prettier --log-level warn --write .",
+		"format:check": "prettier --log-level warn --check .",
+		"format:all": "pnpm run format",
 		"format:file": "prettier --log-level warn --write",
-		"format:check:all": "prettier --log-level warn --check .",
+		"format:check:all": "pnpm run format:check",
+		"typecheck": "tsc --noEmit",
 		"preview": "vite preview",
 		"prepare": "husky install",
 		"test": "vitest",
@@ -63,8 +68,8 @@
 	},
 	"lint-staged": {
 		"*.{ts,tsx}": [
-			"npm run format:file",
-			"npm run lint:file"
+			"pnpm run format:file",
+			"pnpm run lint:file"
 		]
 	}
 }
