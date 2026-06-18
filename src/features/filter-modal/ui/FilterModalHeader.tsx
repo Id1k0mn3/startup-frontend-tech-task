@@ -6,6 +6,8 @@ interface FilterModalHeaderProps {
 	onClose: () => void
 }
 
+const closeButtonSymbol = String.fromCharCode(215)
+
 export const FilterModalHeader = ({
 	closeButtonRef,
 	onClose
@@ -35,7 +37,7 @@ export const FilterModalHeader = ({
 				ref={closeButtonRef}
 				type="button"
 			>
-				{t('modal.closeSymbol')}
+				{closeButtonSymbol}
 			</button>
 		</header>
 	)

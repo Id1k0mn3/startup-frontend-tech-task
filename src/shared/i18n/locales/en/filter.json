@@ -9,7 +9,6 @@
 		"title": "Filters",
 		"subtitle": "Select the options that should be included in the search request.",
 		"close": "Close filters",
-		"closeSymbol": "×",
 		"cancel": "Cancel",
 		"apply": "Apply"
 	},

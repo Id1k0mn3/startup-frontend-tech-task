@@ -8,6 +8,7 @@ import { resources } from './locales'
 i18n.use(initReactI18next).init({
 	resources: resources,
 	lng: I18N_DEFAULT_LANGUAGE,
+	fallbackLng: I18N_DEFAULT_LANGUAGE,
 	interpolation: {
 		escapeValue: false
 	},

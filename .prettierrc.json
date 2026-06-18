@@ -11,13 +11,7 @@
 	"singleAttributePerLine": true,
 	"htmlWhitespaceSensitivity": "ignore",
 	"plugins": ["@trivago/prettier-plugin-sort-imports"],
-	"importOrder": [
-		"^react(.*)",
-		"<THIRD_PARTY_MODULES>",
-		"@api",
-		"@(assets|components|constants|helpers|pages|providers|store|temp|utils|/)",
-		"^[./]"
-	],
+	"importOrder": ["^react(.*)", "<THIRD_PARTY_MODULES>", "^@/", "^[./]"],
 	"importOrderSeparation": true,
 	"importOrderSortSpecifiers": true
 }
