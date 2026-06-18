@@ -1,12 +1,12 @@
-import { FilterChoose } from '@/shared/api/types/Filter'
+import { FilterItem } from '@/shared/api/types/Filter'
 import { FilterOptionFieldset } from '@/shared/ui/filter-option'
 
-import { DraftFilters, FilterModalFiltersProps } from '../model/types'
+import { DraftFilterSelections, FilterModalFiltersProps } from '../model/types'
 import { FilterModalState } from './FilterModalState'
 
 const renderFilterGroup = (
-	filterItem: FilterChoose,
-	draftFilters: DraftFilters,
+	filterItem: FilterItem,
+	draftFilters: DraftFilterSelections,
 	onToggle: (filterId: string, optionId: string) => void
 ) => {
 	const selectedOptionIds = draftFilters[filterItem.id] ?? []

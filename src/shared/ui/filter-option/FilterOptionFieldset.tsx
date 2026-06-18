@@ -1,4 +1,4 @@
-import { FilterChooseOption } from '@/shared/api/types/Filter'
+import { FilterOption } from '@/shared/api/types/Filter'
 
 import { FilterOptionCheckbox } from './FilterOptionCheckbox'
 
@@ -6,7 +6,7 @@ interface FilterOptionFieldsetProps {
 	description?: string
 	label: string
 	onToggle: (optionId: string) => void
-	options: FilterChooseOption[]
+	options: FilterOption[]
 	selectedOptionIds: string[]
 }
 

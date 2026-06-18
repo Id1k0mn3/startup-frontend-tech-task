@@ -1,7 +1,10 @@
 import { FilterItem, FilterType } from '@/shared/api/types/Filter'
-import { SearchRequestFilter } from '@/shared/api/types/SearchRequest/SearchRequestFilter'
+import {
+	SearchRequestFilter,
+	SearchRequestFilters
+} from '@/shared/api/types/SearchRequest'
 
-import { DraftFilters } from './types'
+import { DraftFilterSelections } from './types'
 
 const isRecord = (value: unknown): value is Record<string, unknown> => {
 	return typeof value === 'object' && value !== null
@@ -45,34 +48,35 @@ const collectValidOptionIds = (
 
 export const createDraftFromSelectedFilters = (
 	selectedFilters: SearchRequestFilter,
-	filterItems?: FilterItem[]
-): DraftFilters => {
+	filterItems: FilterItem[]
+): DraftFilterSelections => {
 	if (!Array.isArray(selectedFilters)) {
 		return {}
 	}
 
-	const optionIdsByFilterId = filterItems
-		? createOptionIdsByFilterId(filterItems)
-		: undefined
+	const optionIdsByFilterId = createOptionIdsByFilterId(filterItems)
 
-	return selectedFilters.reduce<DraftFilters>((draft, filter) => {
+	return selectedFilters.reduce<DraftFilterSelections>((draft, filter) => {
 		if (!isRecord(filter) || typeof filter.id !== 'string') {
 			return draft
 		}
 
-		const validOptionIds = optionIdsByFilterId?.get(filter.id)
+		const validOptionIds = optionIdsByFilterId.get(filter.id)
 
-		if (optionIdsByFilterId && !validOptionIds) {
+		if (!validOptionIds) {
 			return draft
 		}
 
-		const optionsIds = collectValidOptionIds(filter.optionsIds, validOptionIds)
+		const selectedOptionIds = collectValidOptionIds(
+			filter.optionsIds,
+			validOptionIds
+		)
 
-		if (optionsIds.length === 0) {
+		if (selectedOptionIds.length === 0) {
 			return draft
 		}
 
-		draft[filter.id] = optionsIds
+		draft[filter.id] = selectedOptionIds
 
 		return draft
 	}, {})
@@ -80,22 +84,22 @@ export const createDraftFromSelectedFilters = (
 
 export const createSearchRequestFilters = (
 	filterItems: FilterItem[],
-	draftFilters: DraftFilters
-): SearchRequestFilter => {
+	draftFilters: DraftFilterSelections
+): SearchRequestFilters => {
 	const draftFilterValues: unknown = draftFilters
 
 	if (!isRecord(draftFilterValues)) {
 		return []
 	}
 
-	return filterItems.reduce<SearchRequestFilter>((filters, filterItem) => {
+	return filterItems.reduce<SearchRequestFilters>((filters, filterItem) => {
 		const validOptionIds = new Set(filterItem.options.map(option => option.id))
-		const optionsIds = collectValidOptionIds(
+		const selectedOptionIds = collectValidOptionIds(
 			draftFilterValues[filterItem.id],
 			validOptionIds
 		)
 
-		if (optionsIds.length === 0) {
+		if (selectedOptionIds.length === 0) {
 			return filters
 		}
 
@@ -104,7 +108,7 @@ export const createSearchRequestFilters = (
 			{
 				id: filterItem.id,
 				type: FilterType.OPTION,
-				optionsIds: [...optionsIds]
+				optionsIds: [...selectedOptionIds]
 			}
 		]
 	}, [])

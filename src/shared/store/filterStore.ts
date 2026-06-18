@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
-import { SearchRequestFilter } from '../api/types/SearchRequest/SearchRequestFilter'
+import { SearchRequestFilter } from '../api/types/SearchRequest'
 
 interface FilterStore {
 	selectedFilters: SearchRequestFilter

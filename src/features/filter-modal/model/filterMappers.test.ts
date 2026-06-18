@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest'
 
 import { FilterItem, FilterType } from '@/shared/api/types/Filter'
-import { SearchRequestFilter } from '@/shared/api/types/SearchRequest/SearchRequestFilter'
+import { SearchRequestFilter } from '@/shared/api/types/SearchRequest'
 
 import {
 	createDraftFromSelectedFilters,
 	createSearchRequestFilters
 } from './filterMappers'
-import { DraftFilters } from './types'
+import { DraftFilterSelections } from './types'
 
 const createTestFilterItems = (): FilterItem[] => [
 	{
@@ -148,7 +148,7 @@ describe('filterMappers', () => {
 
 	describe('createSearchRequestFilters', () => {
 		it('converts draft filters to search request filters', () => {
-			const draftFilters: DraftFilters = {
+			const draftFilters: DraftFilterSelections = {
 				meal: ['breakfast'],
 				facilities: ['wifi', 'parking']
 			}
@@ -170,7 +170,7 @@ describe('filterMappers', () => {
 		})
 
 		it('ignores unknown draft filter ids', () => {
-			const draftFilters: DraftFilters = {
+			const draftFilters: DraftFilterSelections = {
 				unknown: ['anything'],
 				meal: ['breakfast']
 			}
@@ -187,7 +187,7 @@ describe('filterMappers', () => {
 		})
 
 		it('ignores unknown draft option ids', () => {
-			const draftFilters: DraftFilters = {
+			const draftFilters: DraftFilterSelections = {
 				meal: ['breakfast', 'unknown', 'dinner']
 			}
 
@@ -203,7 +203,7 @@ describe('filterMappers', () => {
 		})
 
 		it('does not include empty option selections in search request filters', () => {
-			const draftFilters: DraftFilters = {
+			const draftFilters: DraftFilterSelections = {
 				meal: [],
 				facilities: ['unknown']
 			}
@@ -217,7 +217,7 @@ describe('filterMappers', () => {
 			const corruptedDraftFilters = {
 				meal: ['breakfast', 42, 'unknown', 'breakfast'],
 				facilities: 'wifi'
-			} as unknown as DraftFilters
+			} as unknown as DraftFilterSelections
 
 			expect(() =>
 				createSearchRequestFilters(
@@ -240,7 +240,7 @@ describe('filterMappers', () => {
 			expect(
 				createSearchRequestFilters(
 					createTestFilterItems(),
-					null as unknown as DraftFilters
+					null as unknown as DraftFilterSelections
 				)
 			).toEqual([])
 		})

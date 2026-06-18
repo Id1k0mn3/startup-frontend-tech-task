@@ -14,7 +14,6 @@ module.exports = {
 	plugins: ['react-refresh', 'prefer-arrow', 'i18next'],
 	rules: {
 		'react/react-in-jsx-scope': 'off',
-		'react-hooks/exhaustive-deps': 'off',
 		'prettier/prettier': 'warn',
 		'react-refresh/only-export-components': [
 			'warn',

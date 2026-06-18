@@ -1,16 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-import { SearchRequestFilter } from '@/shared/api/types/SearchRequest/SearchRequestFilter'
+import { SearchRequestFilter } from '@/shared/api/types/SearchRequest'
 import { useFiltersQuery } from '@/shared/api/useFiltersQuery'
 import { useFocusTrap } from '@/shared/hooks/useFocusTrap'
 import { useLockBodyScroll } from '@/shared/hooks/useLockBodyScroll'
 import { Dialog } from '@/shared/ui/Dialog'
 
-import {
-	createDraftFromSelectedFilters,
-	createSearchRequestFilters
-} from '../model/filterMappers'
-import { DraftFilters } from '../model/types'
+import { useFilterDraft } from '../model/useFilterDraft'
 import { FilterConfirmDialog } from './FilterConfirmDialog'
 import { FilterModalFilters } from './FilterModalFilters'
 import { FilterModalFooter } from './FilterModalFooter'
@@ -29,8 +25,9 @@ export const FilterModal = ({
 }: FilterModalProps) => {
 	const { data, isLoading, isError, refetch } = useFiltersQuery()
 	const filterItems = data?.filterItems ?? []
-	const [draftFilters, setDraftFilters] = useState<DraftFilters>(() =>
-		createDraftFromSelectedFilters(initialValue, data?.filterItems)
+	const { draftFilters, selectedFilters, toggleOption } = useFilterDraft(
+		initialValue,
+		filterItems
 	)
 	const [isConfirmOpen, setIsConfirmOpen] = useState(false)
 	const modalRef = useRef<HTMLDivElement>(null)
@@ -77,27 +74,6 @@ export const FilterModal = ({
 			applyButtonRef.current?.focus()
 		}
 	}, [isConfirmOpen])
-
-	const selectedFilters = useMemo(
-		() => createSearchRequestFilters(filterItems, draftFilters),
-		[draftFilters, filterItems]
-	)
-
-	const toggleOption = (filterId: string, optionId: string) => {
-		setDraftFilters(currentDraft => {
-			const selectedOptions = currentDraft[filterId] ?? []
-			const nextSelectedOptions = selectedOptions.includes(optionId)
-				? selectedOptions.filter(
-						selectedOptionId => selectedOptionId !== optionId
-					)
-				: [...selectedOptions, optionId]
-
-			return {
-				...currentDraft,
-				[filterId]: nextSelectedOptions
-			}
-		})
-	}
 
 	const filterModalState = isLoading
 		? { state: 'loading' as const }

@@ -1,5 +1,31 @@
-export { FilterType } from './FilterType'
-export type { FilterChooseOption } from './FilterChooseOption'
-export type { FilterBase } from './FilterBase'
-export type { FilterChoose } from './FilterVariants'
-export type { FilterItem, FilterItemsResponse } from './FilterItem'
+export const FilterType = {
+	OPTION: 'OPTION'
+} as const
+
+export type FilterType = (typeof FilterType)[keyof typeof FilterType]
+
+export interface FilterBase {
+	id: string
+	name: string
+	description?: string
+	type: FilterType
+}
+
+export interface FilterOption {
+	id: string
+	name: string
+	description?: string
+}
+
+export interface OptionFilterItem extends FilterBase {
+	type: typeof FilterType.OPTION
+	options: FilterOption[]
+}
+
+export type FilterChooseOption = FilterOption
+export type FilterChoose = OptionFilterItem
+export type FilterItem = OptionFilterItem
+
+export interface FilterItemsResponse {
+	filterItems: FilterItem[]
+}

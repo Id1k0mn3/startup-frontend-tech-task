@@ -1,6 +1,7 @@
-import { FilterChoose } from '@/shared/api/types/Filter'
+import { FilterItem } from '@/shared/api/types/Filter'
 
-export type DraftFilters = Record<string, string[]>
+export type DraftFilterSelections = Record<string, string[]>
+export type DraftFilters = DraftFilterSelections
 
 export type FilterModalStateProps =
 	| {
@@ -17,8 +18,8 @@ export type FilterModalStateProps =
 export type FilterModalFiltersProps =
 	| FilterModalStateProps
 	| {
-			draftFilters: DraftFilters
-			filterItems: FilterChoose[]
+			draftFilters: DraftFilterSelections
+			filterItems: FilterItem[]
 			onToggle: (filterId: string, optionId: string) => void
 			state: 'ready'
 	  }
