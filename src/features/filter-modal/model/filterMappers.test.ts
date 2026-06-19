@@ -4,6 +4,7 @@ import { FilterItem, FilterType } from '@/shared/api/types/Filter'
 import { SearchRequestFilter } from '@/shared/api/types/SearchRequest'
 
 import {
+	areSearchRequestFiltersEqual,
 	createDraftFromSelectedFilters,
 	createSearchRequestFilters
 } from './filterMappers'
@@ -243,6 +244,50 @@ describe('filterMappers', () => {
 					null as unknown as DraftFilterSelections
 				)
 			).toEqual([])
+		})
+	})
+
+	describe('areSearchRequestFiltersEqual', () => {
+		it('treats filters with the same selections as equal regardless of order', () => {
+			const left: SearchRequestFilter = [
+				{
+					id: 'meal',
+					type: FilterType.OPTION,
+					optionsIds: ['breakfast', 'dinner']
+				},
+				{
+					id: 'facilities',
+					type: FilterType.OPTION,
+					optionsIds: ['parking']
+				}
+			]
+			const right: SearchRequestFilter = [
+				{
+					id: 'facilities',
+					type: FilterType.OPTION,
+					optionsIds: ['parking']
+				},
+				{
+					id: 'meal',
+					type: FilterType.OPTION,
+					optionsIds: ['dinner', 'breakfast']
+				}
+			]
+
+			expect(areSearchRequestFiltersEqual(left, right)).toBe(true)
+		})
+
+		it('detects different selections', () => {
+			const left: SearchRequestFilter = [
+				{
+					id: 'meal',
+					type: FilterType.OPTION,
+					optionsIds: ['breakfast']
+				}
+			]
+			const right: SearchRequestFilter = []
+
+			expect(areSearchRequestFiltersEqual(left, right)).toBe(false)
 		})
 	})
 })

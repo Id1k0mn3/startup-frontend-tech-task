@@ -7,14 +7,12 @@ export type FilterType = (typeof FilterType)[keyof typeof FilterType]
 export interface FilterBase {
 	id: string
 	name: string
-	description?: string
 	type: FilterType
 }
 
 export interface FilterOption {
 	id: string
 	name: string
-	description?: string
 }
 
 export interface OptionFilterItem extends FilterBase {

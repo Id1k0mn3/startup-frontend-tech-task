@@ -1,6 +1,6 @@
 import { type ButtonHTMLAttributes, type ReactNode, forwardRef } from 'react'
 
-type ButtonVariant = 'primary' | 'secondary' | 'danger'
+type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'text'
 type ButtonSize = 'compact' | 'default' | 'large'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -9,19 +9,22 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 	variant?: ButtonVariant
 }
 
-const baseClassName = 'rounded-lg text-sm transition'
+const baseClassName =
+	'inline-flex items-center justify-center text-center transition'
 
 const variantClassNames: Record<ButtonVariant, string> = {
-	danger: 'bg-red-700 text-white hover:bg-red-800',
+	danger: 'rounded-lg bg-red-700 px-5 py-3 text-white hover:bg-red-800',
 	primary:
-		'bg-blue-700 text-white hover:bg-blue-800 disabled:cursor-not-allowed disabled:bg-gray-300',
-	secondary: 'border border-gray-300 text-gray-700 hover:bg-gray-50'
+		'w-[184px] rounded-[16px] bg-app-orange px-[26px] py-6 text-[16px] width-(184px) font-semibold leading-none text-app-white hover:bg-app-orange/90 disabled:cursor-not-allowed disabled:bg-app-light-gray',
+	secondary:
+		'rounded-lg border border-gray-300 bg-white px-5 py-2 text-gray-700 hover:bg-gray-50 width-(184px)',
+	text: 'p-[0] border-b-[1px] border-app-base text-app-base hover:border-app-orange hover:text-app-orange disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-400'
 }
 
 const sizeClassNames: Record<ButtonSize, string> = {
-	compact: 'px-4 py-2 font-medium',
-	default: 'px-5 py-2 font-medium',
-	large: 'px-5 py-3 font-semibold'
+	compact: 'text-sm',
+	default: 'text-sm',
+	large: 'text-base'
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(

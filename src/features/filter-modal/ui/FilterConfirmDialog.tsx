@@ -6,11 +6,15 @@ import { Button } from '@/shared/ui/Button'
 import { Dialog } from '@/shared/ui/Dialog'
 
 interface FilterConfirmDialogProps {
+	description: string
+	title: string
 	onCancel: () => void
 	onConfirm: () => void
 }
 
 export const FilterConfirmDialog = ({
+	description,
+	title,
 	onCancel,
 	onConfirm
 }: FilterConfirmDialogProps) => {
@@ -26,7 +30,6 @@ export const FilterConfirmDialog = ({
 
 	return (
 		<Dialog
-			ariaDescribedBy="filter-confirm-description"
 			ariaLabelledBy="filter-confirm-title"
 			overlayClassName="z-20 bg-black/50"
 			panelClassName="w-full max-w-md p-6"
@@ -37,13 +40,13 @@ export const FilterConfirmDialog = ({
 				className="text-xl font-semibold text-gray-950"
 				id="filter-confirm-title"
 			>
-				{t('confirm.title')}
+				{title}
 			</h3>
 			<p
-				className="mt-2 text-sm text-gray-600"
+				className="mt-3 text-sm text-gray-600"
 				id="filter-confirm-description"
 			>
-				{t('confirm.message')}
+				{description}
 			</p>
 			<footer className="mt-6 flex justify-end gap-3">
 				<Button

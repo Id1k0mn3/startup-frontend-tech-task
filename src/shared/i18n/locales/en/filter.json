@@ -6,15 +6,21 @@
 		"selectedFilters": "Confirmed selected filters"
 	},
 	"modal": {
-		"title": "Filters",
+		"title": "Filter",
 		"subtitle": "Select the options that should be included in the search request.",
 		"close": "Close filters",
-		"cancel": "Cancel",
+		"clear": "Clear all parameters",
 		"apply": "Apply"
 	},
 	"confirm": {
-		"title": "Apply selected filters?",
-		"message": "Your current draft will replace the previously confirmed filters.",
+		"apply": {
+			"title": "Apply selected filters?",
+			"description": "Your current draft will replace the previously confirmed filters."
+		},
+		"clear": {
+			"title": "Clear all parameters?",
+			"description": "All selected filters will be removed from the search request."
+		},
 		"cancel": "Cancel",
 		"confirm": "Confirm"
 	},

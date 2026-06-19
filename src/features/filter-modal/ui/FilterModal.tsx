@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { SearchRequestFilter } from '@/shared/api/types/SearchRequest'
 import { useFiltersQuery } from '@/shared/api/useFiltersQuery'
@@ -12,6 +13,8 @@ import { FilterModalFilters } from './FilterModalFilters'
 import { FilterModalFooter } from './FilterModalFooter'
 import { FilterModalHeader } from './FilterModalHeader'
 
+type ConfirmMode = 'apply' | 'clear' | null
+
 interface FilterModalProps {
 	initialValue: SearchRequestFilter
 	onApply: (filters: SearchRequestFilter) => void
@@ -23,20 +26,22 @@ export const FilterModal = ({
 	onApply,
 	onClose
 }: FilterModalProps) => {
+	const { t } = useTranslation('filter')
 	const { data, isLoading, isError, refetch } = useFiltersQuery()
 	const filterItems = data?.filterItems ?? []
-	const { draftFilters, selectedFilters, toggleOption } = useFilterDraft(
-		initialValue,
-		filterItems
-	)
-	const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+	const { draftFilters, isDirty, selectedFilters, toggleOption } =
+		useFilterDraft(initialValue, filterItems)
+	const [confirmMode, setConfirmMode] = useState<ConfirmMode>(null)
 	const modalRef = useRef<HTMLDivElement>(null)
 	const closeButtonRef = useRef<HTMLButtonElement>(null)
 	const applyButtonRef = useRef<HTMLButtonElement>(null)
+	const clearButtonRef = useRef<HTMLButtonElement>(null)
 	const wasConfirmOpenRef = useRef(false)
+	const confirmTriggerRef = useRef<HTMLButtonElement | null>(null)
+	const confirmFocusTargetRef = useRef<'trigger' | 'close' | null>(null)
 
 	useLockBodyScroll(true)
-	useFocusTrap(modalRef, !isConfirmOpen)
+	useFocusTrap(modalRef, !confirmMode)
 
 	useEffect(() => {
 		const handleEscape = (event: KeyboardEvent) => {
@@ -44,8 +49,8 @@ export const FilterModal = ({
 				return
 			}
 
-			if (isConfirmOpen) {
-				setIsConfirmOpen(false)
+			if (confirmMode) {
+				setConfirmMode(null)
 
 				return
 			}
@@ -56,14 +61,14 @@ export const FilterModal = ({
 		window.addEventListener('keydown', handleEscape)
 
 		return () => window.removeEventListener('keydown', handleEscape)
-	}, [isConfirmOpen, onClose])
+	}, [confirmMode, onClose])
 
 	useEffect(() => {
 		closeButtonRef.current?.focus()
 	}, [])
 
 	useEffect(() => {
-		if (isConfirmOpen) {
+		if (confirmMode) {
 			wasConfirmOpenRef.current = true
 
 			return
@@ -71,9 +76,17 @@ export const FilterModal = ({
 
 		if (wasConfirmOpenRef.current) {
 			wasConfirmOpenRef.current = false
-			applyButtonRef.current?.focus()
+			if (confirmFocusTargetRef.current === 'trigger') {
+				confirmTriggerRef.current?.focus()
+			}
+
+			if (confirmFocusTargetRef.current === 'close') {
+				closeButtonRef.current?.focus()
+			}
+
+			confirmFocusTargetRef.current = null
 		}
-	}, [isConfirmOpen])
+	}, [confirmMode])
 
 	const filterModalState = isLoading
 		? { state: 'loading' as const }
@@ -89,25 +102,57 @@ export const FilterModal = ({
 					}
 
 	const handleConfirm = () => {
+		if (confirmMode === 'clear') {
+			confirmFocusTargetRef.current = 'close'
+			onApply([])
+			setConfirmMode(null)
+
+			return
+		}
+
 		onApply(selectedFilters)
-		setIsConfirmOpen(false)
+		setConfirmMode(null)
 		onClose()
 	}
 
+	const handleClear = () => {
+		confirmTriggerRef.current = clearButtonRef.current
+		confirmFocusTargetRef.current = 'trigger'
+		setConfirmMode('clear')
+	}
+
+	const handleApply = () => {
+		confirmTriggerRef.current = applyButtonRef.current
+		confirmFocusTargetRef.current = 'trigger'
+		setConfirmMode('apply')
+	}
+
+	const confirmContent =
+		confirmMode === 'clear'
+			? {
+					description: t('confirm.clear.description'),
+					title: t('confirm.clear.title')
+				}
+			: {
+					description: t('confirm.apply.description'),
+					title: t('confirm.apply.title')
+				}
+
 	return (
 		<Dialog
-			ariaDescribedBy="filter-modal-description"
 			ariaLabelledBy="filter-modal-title"
 			overlayClassName="z-10 bg-black/40"
 			overlayContent={
-				isConfirmOpen && (
+				confirmMode && (
 					<FilterConfirmDialog
-						onCancel={() => setIsConfirmOpen(false)}
+						description={confirmContent.description}
+						title={confirmContent.title}
+						onCancel={() => setConfirmMode(null)}
 						onConfirm={handleConfirm}
 					/>
 				)
 			}
-			panelClassName="flex max-h-[90dvh] w-full max-w-3xl flex-col overflow-hidden"
+			panelClassName="flex max-h-[90dvh] w-full max-w-3xl flex-col overflow-hidden px-6 py-5"
 			role="dialog"
 			rootRef={modalRef}
 		>
@@ -116,15 +161,23 @@ export const FilterModal = ({
 				onClose={onClose}
 			/>
 
-			<div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
+			<div className="min-h-0 flex-1 overflow-y-auto no-scrollbar">
 				<FilterModalFilters {...filterModalState} />
 			</div>
 
 			<FilterModalFooter
-				applyDisabled={filterModalState.state !== 'ready'}
+				applyDisabled={
+					filterModalState.state !== 'ready' ||
+					selectedFilters.length === 0 ||
+					!isDirty
+				}
 				applyButtonRef={applyButtonRef}
-				onApply={() => setIsConfirmOpen(true)}
-				onClose={onClose}
+				clearDisabled={
+					filterModalState.state !== 'ready' || selectedFilters.length === 0
+				}
+				clearButtonRef={clearButtonRef}
+				onApply={handleApply}
+				onClear={handleClear}
 			/>
 		</Dialog>
 	)

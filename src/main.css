@@ -1,1 +1,31 @@
+@import './styles/vars.css';
 @import 'tailwindcss';
+
+@layer base {
+	html,
+	body {
+		font-family: var(--font-inter);
+	}
+
+	button,
+	input,
+	select,
+	textarea {
+		font: inherit;
+	}
+}
+
+@layer utilities {
+	.no-scrollbar::-webkit-scrollbar {
+		display: none;
+	}
+
+	.no-scrollbar {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+
+	.w-184px {
+		width: 184px;
+	}
+}

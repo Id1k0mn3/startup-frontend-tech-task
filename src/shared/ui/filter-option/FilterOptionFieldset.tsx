@@ -3,7 +3,6 @@ import { FilterOption } from '@/shared/api/types/Filter'
 import { FilterOptionCheckbox } from './FilterOptionCheckbox'
 
 interface FilterOptionFieldsetProps {
-	description?: string
 	label: string
 	onToggle: (optionId: string) => void
 	options: FilterOption[]
@@ -11,31 +10,27 @@ interface FilterOptionFieldsetProps {
 }
 
 export const FilterOptionFieldset = ({
-	description,
 	label,
 	onToggle,
 	options,
 	selectedOptionIds
 }: FilterOptionFieldsetProps) => {
 	return (
-		<fieldset className="rounded-xl border border-gray-200 p-4">
-			<legend className="px-1 text-base font-semibold text-gray-950">
+		<fieldset className="mb-8">
+			<legend className="font-medium border-bottom text-app-base text-2xl">
 				{label}
 			</legend>
-			{description && (
-				<p className="mt-1 text-sm text-gray-500">{description}</p>
-			)}
-			<div className="mt-4 grid gap-3 sm:grid-cols-2">
+			<div className="mt-6 grid sm:grid-cols-3 gap-4 ">
 				{options.map(option => (
 					<FilterOptionCheckbox
 						checked={selectedOptionIds.includes(option.id)}
-						description={option.description}
 						key={option.id}
 						label={option.name}
 						onChange={() => onToggle(option.id)}
 					/>
 				))}
 			</div>
+			<div className="size-[2px] w-full bg-app-light-gray rounded-xs mt-8"></div>
 		</fieldset>
 	)
 }

@@ -13,7 +13,6 @@ const renderFilterGroup = (
 
 	return (
 		<FilterOptionFieldset
-			description={filterItem.description}
 			key={filterItem.id}
 			label={filterItem.name}
 			onToggle={optionId => onToggle(filterItem.id, optionId)}

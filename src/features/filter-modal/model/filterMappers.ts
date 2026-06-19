@@ -113,3 +113,36 @@ export const createSearchRequestFilters = (
 		]
 	}, [])
 }
+
+const normalizeSearchRequestFilters = (filters: SearchRequestFilters) =>
+	filters
+		.map(filter => ({
+			id: filter.id,
+			optionsIds: [...new Set(filter.optionsIds)].sort()
+		}))
+		.sort((left, right) => left.id.localeCompare(right.id))
+
+export const areSearchRequestFiltersEqual = (
+	left: SearchRequestFilters,
+	right: SearchRequestFilters
+) => {
+	const normalizedLeft = normalizeSearchRequestFilters(left)
+	const normalizedRight = normalizeSearchRequestFilters(right)
+
+	if (normalizedLeft.length !== normalizedRight.length) {
+		return false
+	}
+
+	return normalizedLeft.every((filter, index) => {
+		const otherFilter = normalizedRight[index]
+
+		return (
+			filter.id === otherFilter.id &&
+			filter.optionsIds.length === otherFilter.optionsIds.length &&
+			filter.optionsIds.every(
+				(optionId, optionIndex) =>
+					optionId === otherFilter.optionsIds[optionIndex]
+			)
+		)
+	})
+}

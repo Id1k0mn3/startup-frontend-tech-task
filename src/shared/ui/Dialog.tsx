@@ -3,7 +3,6 @@ import { type ReactNode, type Ref } from 'react'
 type DialogRole = 'dialog' | 'alertdialog'
 
 interface DialogProps {
-	ariaDescribedBy: string
 	ariaLabelledBy: string
 	children: ReactNode
 	overlayContent?: ReactNode
@@ -18,7 +17,6 @@ const overlayBaseClassName =
 const panelBaseClassName = 'rounded-2xl bg-white shadow-2xl'
 
 export const Dialog = ({
-	ariaDescribedBy,
 	ariaLabelledBy,
 	children,
 	overlayContent,
@@ -28,7 +26,6 @@ export const Dialog = ({
 	rootRef
 }: DialogProps) => (
 	<div
-		aria-describedby={ariaDescribedBy}
 		aria-labelledby={ariaLabelledBy}
 		aria-modal="true"
 		className={`${overlayBaseClassName} ${overlayClassName}`}

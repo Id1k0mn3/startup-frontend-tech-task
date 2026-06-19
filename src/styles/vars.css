@@ -1,0 +1,33 @@
+:root {
+	/* base */
+	--base-color: #31393c;
+	--color-light-gray: #b4b4b4;
+	--color-dark-gray: #474747;
+	--white-color: #fff;
+	--orange-color: #ff5f00;
+	--green-color: #078691;
+	--font-inter: 'Inter', sans-serif;
+
+	/* typography */
+	--base-text-color: var(--base-color);
+
+	/* checkbox */
+	--checkbox-border-color: var(--base-color);
+
+	/* button */
+	--button-background-color: var(--orange-color);
+	--button-color: var(--white-color);
+
+	/* decoration */
+	--devider-color: var(--color-light-gray);
+}
+
+@theme inline {
+	--color-app-base: var(--base-color);
+	--color-app-light-gray: var(--color-light-gray);
+	--color-app-dark-gray: var(--color-dark-gray);
+	--color-app-white: var(--white-color);
+	--color-app-orange: var(--orange-color);
+	--color-app-green: var(--green-color);
+	--font-sans: var(--font-inter);
+}

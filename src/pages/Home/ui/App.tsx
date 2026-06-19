@@ -41,7 +41,6 @@ export const App = () => {
 						</p>
 					</div>
 					<Button
-						className="w-full sm:w-auto"
 						onClick={() => setIsFilterModalOpen(true)}
 						ref={openFiltersButtonRef}
 						size="large"
