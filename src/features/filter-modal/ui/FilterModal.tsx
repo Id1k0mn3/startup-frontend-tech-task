@@ -133,11 +133,9 @@ export const FilterModal = ({
 	const confirmContent =
 		confirmMode === 'clear'
 			? {
-					description: t('confirm.clear.description'),
 					title: t('confirm.clear.title')
 				}
 			: {
-					description: t('confirm.apply.description'),
 					title: t('confirm.apply.title')
 				}
 
@@ -149,14 +147,13 @@ export const FilterModal = ({
 			overlayContent={
 				confirmMode && (
 					<FilterConfirmDialog
-						description={confirmContent.description}
 						title={confirmContent.title}
 						onCancel={() => setConfirmMode(null)}
 						onConfirm={handleConfirm}
 					/>
 				)
 			}
-			panelClassName="flex max-h-[90dvh] w-full max-w-3xl flex-col overflow-hidden px-6 py-5"
+			panelClassName="flex max-h-[90dvh] w-full max-w-3xl flex-col overflow-hidden px-6 py-5 w-full max-w-[1280px]"
 			role="dialog"
 			rootRef={modalRef}
 		>

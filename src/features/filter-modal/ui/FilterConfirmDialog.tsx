@@ -6,14 +6,12 @@ import { Button } from '@/shared/ui/Button'
 import { Dialog } from '@/shared/ui/Dialog'
 
 interface FilterConfirmDialogProps {
-	description: string
 	title: string
 	onCancel: () => void
 	onConfirm: () => void
 }
 
 export const FilterConfirmDialog = ({
-	description,
 	title,
 	onCancel,
 	onConfirm
@@ -30,34 +28,33 @@ export const FilterConfirmDialog = ({
 
 	return (
 		<Dialog
-			ariaDescribedBy="filter-confirm-description"
 			ariaLabelledBy="filter-confirm-title"
-			overlayClassName="z-20 bg-black/50"
-			panelClassName="w-full max-w-md p-6"
+			overlayClassName="z-20 bg-black/50 pt-[200px]"
+			panelClassName="w-full max-w-[1280px] justify-start p-6"
 			role="alertdialog"
 			rootRef={dialogRef}
 		>
 			<h3
-				className="text-xl font-semibold text-gray-950"
+				className="text-xl font-medium text-[40px] text-center text-gray-950 mb-[120px]"
 				id="filter-confirm-title"
 			>
 				{title}
 			</h3>
-			<p
-				className="mt-3 text-sm text-gray-600"
-				id="filter-confirm-description"
-			>
-				{description}
-			</p>
-			<footer className="mt-6 flex justify-end gap-3">
+			<footer className="mt-6 flex justify-center gap-3">
 				<Button
 					onClick={onCancel}
+					className="w-[280px]"
 					ref={cancelButtonRef}
 					variant="secondary"
 				>
 					{t('confirm.cancel')}
 				</Button>
-				<Button onClick={onConfirm}>{t('confirm.confirm')}</Button>
+				<Button
+					className="w-[280px]"
+					onClick={onConfirm}
+				>
+					{t('confirm.confirm')}
+				</Button>
 			</footer>
 		</Dialog>
 	)

@@ -6,8 +6,7 @@
 		"selectedFilters": "Confirmed selected filters"
 	},
 	"modal": {
-		"title": "Filters",
-		"subtitle": "Select the options that should be included in the search request.",
+		"title": "Filter",
 		"close": "Close filters",
 		"clear": "Clear all parameters",
 		"apply": "Apply"

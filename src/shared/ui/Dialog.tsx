@@ -13,8 +13,7 @@ interface DialogProps {
 	rootRef?: Ref<HTMLDivElement>
 }
 
-const overlayBaseClassName =
-	'fixed inset-0 flex items-center justify-center p-4'
+const overlayBaseClassName = 'fixed inset-0 justify-center p-4'
 const panelBaseClassName = 'rounded-2xl bg-white shadow-2xl'
 
 export const Dialog = ({

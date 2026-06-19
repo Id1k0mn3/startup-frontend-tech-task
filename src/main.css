@@ -12,6 +12,7 @@
 	select,
 	textarea {
 		font: inherit;
+		cursor: pointer;
 	}
 }
 

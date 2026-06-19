@@ -23,12 +23,6 @@ export const FilterModalHeader = ({
 				>
 					{t('modal.title')}
 				</h2>
-				<p
-					className="mt-3 max-w-2xl text-center text-sm text-gray-600"
-					id="filter-modal-description"
-				>
-					{t('modal.subtitle')}
-				</p>
 				<button
 					aria-label={t('modal.close')}
 					className="absolute right-[0] rounded-full px-3 py-1 text-2xl leading-none text-gray-500 transition hover:bg-gray-100 hover:text-gray-900 top-1/2 translate-y-[-50%]"
