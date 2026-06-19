@@ -5,6 +5,7 @@ import {
 	waitFor,
 	within
 } from '@testing-library/react'
+import i18n from 'i18next'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { FilterType } from '@/shared/api/types/Filter'
@@ -63,8 +64,8 @@ const createFiltersQueryResult = (options?: {
 
 let mockFiltersQueryResult = createFiltersQueryResult()
 
-vi.mock('@/shared/api/useFiltersQuery', () => ({
-	useFiltersQuery: () => mockFiltersQueryResult
+vi.mock('@/features/filter-advertisements', () => ({
+	useFilterOptionsQuery: () => mockFiltersQueryResult
 }))
 
 const renderApp = () => render(<App />)
@@ -94,7 +95,8 @@ const getSelectedFiltersPre = () => {
 	return pre
 }
 
-beforeEach(() => {
+beforeEach(async () => {
+	await i18n.changeLanguage('en')
 	localStorage.clear()
 	useFilterStore.setState({ selectedFilters: [] })
 	mockFiltersQueryResult = createFiltersQueryResult()
@@ -106,6 +108,25 @@ describe('App filter modal flow', () => {
 
 		expect(
 			screen.getByRole('button', { name: 'Open filters' })
+		).toBeInTheDocument()
+	})
+
+	it('switches language from the header and persists the selection', async () => {
+		renderApp()
+
+		fireEvent.change(screen.getByRole('combobox'), {
+			target: { value: 'uk' }
+		})
+
+		await waitFor(() => {
+			expect(
+				screen.getByRole('heading', { name: 'Фільтри готелів' })
+			).toBeInTheDocument()
+		})
+
+		expect(localStorage.getItem('wwt-language')).toBe('uk')
+		expect(
+			screen.getByRole('button', { name: 'Відкрити фільтри' })
 		).toBeInTheDocument()
 	})
 

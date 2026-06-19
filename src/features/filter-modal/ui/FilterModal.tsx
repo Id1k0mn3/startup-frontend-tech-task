@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { useFilterOptionsQuery } from '@/features/filter-advertisements'
 import { SearchRequestFilter } from '@/shared/api/types/SearchRequest'
-import { useFiltersQuery } from '@/shared/api/useFiltersQuery'
 import { useFocusTrap } from '@/shared/hooks/useFocusTrap'
 import { useLockBodyScroll } from '@/shared/hooks/useLockBodyScroll'
+import { type AppLanguage } from '@/shared/i18n'
 import { Dialog } from '@/shared/ui/Dialog'
 
 import { useFilterDraft } from '../model/useFilterDraft'
@@ -17,17 +18,19 @@ type ConfirmMode = 'apply' | 'clear' | null
 
 interface FilterModalProps {
 	initialValue: SearchRequestFilter
+	language: AppLanguage
 	onApply: (filters: SearchRequestFilter) => void
 	onClose: () => void
 }
 
 export const FilterModal = ({
 	initialValue,
+	language,
 	onApply,
 	onClose
 }: FilterModalProps) => {
 	const { t } = useTranslation('filter')
-	const { data, isLoading, isError, refetch } = useFiltersQuery()
+	const { data, isLoading, isError, refetch } = useFilterOptionsQuery(language)
 	const filterItems = data?.filterItems ?? []
 	const { draftFilters, isDirty, selectedFilters, toggleOption } =
 		useFilterDraft(initialValue, filterItems)
@@ -140,6 +143,7 @@ export const FilterModal = ({
 
 	return (
 		<Dialog
+			ariaDescribedBy="filter-modal-description"
 			ariaLabelledBy="filter-modal-title"
 			overlayClassName="z-10 bg-black/40"
 			overlayContent={

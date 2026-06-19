@@ -1,0 +1,9 @@
+{
+	"languageSelector": {
+		"label": "Language",
+		"options": {
+			"en": "English",
+			"uk": "Ukrainian"
+		}
+	}
+}

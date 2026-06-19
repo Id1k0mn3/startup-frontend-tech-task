@@ -30,6 +30,7 @@ export const FilterConfirmDialog = ({
 
 	return (
 		<Dialog
+			ariaDescribedBy="filter-confirm-description"
 			ariaLabelledBy="filter-confirm-title"
 			overlayClassName="z-20 bg-black/50"
 			panelClassName="w-full max-w-md p-6"

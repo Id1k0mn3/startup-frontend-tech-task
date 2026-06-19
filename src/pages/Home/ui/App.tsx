@@ -1,17 +1,23 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { LanguageSwitcher } from '@/features/change-language'
 import { FilterModal } from '@/features/filter-modal'
+import { I18N_DEFAULT_LANGUAGE, isAppLanguage } from '@/shared/i18n'
 import { useFilterStore } from '@/shared/store/filterStore'
 import { Button } from '@/shared/ui/Button'
 
 export const App = () => {
-	const { t } = useTranslation('filter')
+	const { t, i18n } = useTranslation('filter')
 	const [isFilterModalOpen, setIsFilterModalOpen] = useState(false)
 	const openFiltersButtonRef = useRef<HTMLButtonElement>(null)
 	const shouldRestoreFocusRef = useRef(false)
 	const selectedFilters = useFilterStore(state => state.selectedFilters)
 	const applyFilters = useFilterStore(state => state.applyFilters)
+	const resolvedLanguage = i18n.resolvedLanguage ?? i18n.language
+	const currentLanguage = isAppLanguage(resolvedLanguage)
+		? resolvedLanguage
+		: I18N_DEFAULT_LANGUAGE
 
 	const closeFilterModal = () => {
 		shouldRestoreFocusRef.current = true
@@ -40,13 +46,16 @@ export const App = () => {
 							{t('home.description')}
 						</p>
 					</div>
-					<Button
-						onClick={() => setIsFilterModalOpen(true)}
-						ref={openFiltersButtonRef}
-						size="large"
-					>
-						{t('home.openFilters')}
-					</Button>
+					<div className="flex flex-col gap-3 sm:items-end">
+						<LanguageSwitcher />
+						<Button
+							onClick={() => setIsFilterModalOpen(true)}
+							ref={openFiltersButtonRef}
+							size="large"
+						>
+							{t('home.openFilters')}
+						</Button>
+					</div>
 				</header>
 
 				<section aria-labelledby="selected-filters-title">
@@ -65,6 +74,7 @@ export const App = () => {
 			{isFilterModalOpen && (
 				<FilterModal
 					initialValue={selectedFilters}
+					language={currentLanguage}
 					onApply={applyFilters}
 					onClose={closeFilterModal}
 				/>
